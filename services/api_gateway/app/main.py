@@ -1,25 +1,30 @@
 from fastapi import FastAPI
 
+from services.api_gateway.app.core.config import get_settings
 
-# Create the main FastAPI application.
+# Load application configuration.
+settings = get_settings()
+
+
+# Create the FastAPI application.
 app = FastAPI(
-    title="InferStack API",
+    title=settings.app_name,
     description="Enterprise AI Engineering Platform",
-    version="0.1.0",
+    version=settings.app_version,
 )
 
 
-@app.get("/api/v1/health")
+@app.get(f"{settings.api_prefix}/health")
 async def health_check():
     """
     Basic health-check endpoint.
 
-    This endpoint confirms that the API Gateway
-    is running and able to accept requests.
+    This confirms that the API Gateway is running.
     """
 
     return {
         "status": "healthy",
-        "service": "inferstack-api",
-        "version": "0.1.0",
+        "service": settings.app_name,
+        "version": settings.app_version,
+        "environment": settings.environment,
     }
